@@ -1,7 +1,7 @@
 import React from "react";
 import styles from "./styles/OrderConfirmation.module.css";
 
-function OrderConfirmation({ order: { name, address, items }, id }) {
+function OrderConfirmation({ order: { id, name, address, items } }) {
   return (
     <div className={styles.confirmationMessage}>
       <h1>Thank you for your order</h1>

@@ -4,7 +4,12 @@ import OrderConfirmation from "./OrderConfirmation";
 
 function ConfirmationPage() {
   const { id } = useParams();
-  const [order, setOrder] = useState({});
+  const [order, setOrder] = useState({
+    id: 0,
+    name: "",
+    address: "",
+    items: []
+  });
 
   const getOrder = async () => {
     const response = await fetch(`/api/orders/${id}`);
@@ -14,11 +19,11 @@ function ConfirmationPage() {
 
   useEffect(() => {
     getOrder();
-  }, []);
+  }, [id]);
 
   return (
     <div>
-      <OrderConfirmation order={order} id={id} />
+      <OrderConfirmation order={order} />
     </div>
   );
 }
