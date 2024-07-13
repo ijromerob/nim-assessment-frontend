@@ -1,10 +1,14 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import styles from "./styles/OrderModal.module.css";
 
 function OrderModal({ order, setOrderModal }) {
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
   const [address, setAddress] = useState("");
+
+  const nameRef = useRef(null);
+  const phoneRef = useRef(null);
+  const addressRef = useRef(null);
 
   const placeOrder = async () => {
     const response = await fetch("/api/orders", {
@@ -49,6 +53,8 @@ function OrderModal({ order, setOrderModal }) {
                 }}
                 type="text"
                 id="name"
+                ref={nameRef}
+                required
               />
             </label>
           </div>
@@ -60,8 +66,12 @@ function OrderModal({ order, setOrderModal }) {
                   e.preventDefault();
                   setPhone(e.target.value);
                 }}
-                type="phone"
+                type="tel"
                 id="phone"
+                pattern="\(\d{3}\) \d{3}-\d{4}"
+                placeholder="(XXX) XXX-XXXX"
+                ref={phoneRef}
+                required
               />
             </label>
           </div>
@@ -73,13 +83,21 @@ function OrderModal({ order, setOrderModal }) {
                   e.preventDefault();
                   setAddress(e.target.value);
                 }}
-                type="phone"
+                type="text"
                 id="address"
+                ref={addressRef}
+                required
               />
             </label>
           </div>
         </form>
-
+        <div className={styles.incorrectMessage}>
+          {!nameRef.current?.checkValidity() && <p>Missing name</p>}
+          {!phoneRef.current?.checkValidity() && (
+            <p>Invalid phone number format:(XXX) XXX-XXXX</p>
+          )}
+          {!addressRef.current?.checkValidity() && <p>Missing address</p>}
+        </div>
         <div className={styles.orderModalButtons}>
           <button
             className={styles.orderModalClose}
@@ -89,7 +107,13 @@ function OrderModal({ order, setOrderModal }) {
           </button>
           <button
             onClick={() => {
-              placeOrder();
+              if (
+                nameRef.current?.checkValidity() &&
+                phoneRef.current?.checkValidity() &&
+                addressRef.current?.checkValidity()
+              ) {
+                placeOrder();
+              }
             }}
             className={styles.orderModalPlaceOrder}
           >
